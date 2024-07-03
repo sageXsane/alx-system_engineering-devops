@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Script uses a function to resolve localhost and facebook.com to 127.0.0.2(from 127.0.0.1)  and 8.8.8.8 respectively
+
+change_your_home_IP()
+{
+    local new_ip=$1
+    local hostname=$2
+
+    if grep -q -E "^[^#]*\b$hostname\b" /etc/hosts
+    then
+        sudo sed -i -E "s/^([0-9]{1,3}\.){3}[0-9]{1,3}([[:space:]]+|\t+)$hostname$/$new_ip\t$hostname/" /etc/hosts
+    else
+        echo "$new_ip $hostname" | sudo tee -a /etc/hosts > /dev/null
+    fi
+}
+
+change_your_home_IP 127.0.0.2 localhost
+change_your_home_IP 8.8.8.8 facebook.com
